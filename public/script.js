@@ -72,24 +72,43 @@ function roll(boxType) {
   resultEl.textContent = "Losowanie...";
   scrollStrip.innerHTML = "";
 
+  const reward = getRandomItem(box.items);
+
   const itemsForScroll = [];
-  for (let i = 0; i < 40; i++) {
+
+  const preItems = 20;
+  const postItems = 20;
+
+  for (let i = 0; i < preItems; i++) {
     const random = box.items[Math.floor(Math.random() * box.items.length)];
     itemsForScroll.push(random);
-    const el = document.createElement("div");
-    el.className = "item";
-    el.textContent = random.name;
-    scrollStrip.appendChild(el);
   }
 
-  const reward = getRandomItem(box.items);
-  const finalEl = document.createElement("div");
-  finalEl.className = "item";
-  finalEl.textContent = reward.name;
-  scrollStrip.appendChild(finalEl);
-  itemsForScroll.push(reward);
+  itemsForScroll.push(reward); // środek
 
-  scrollStrip.style.transform = `translateX(-${(itemsForScroll.length - 1) * 100}px)`;
+  for (let i = 0; i < postItems; i++) {
+    const random = box.items[Math.floor(Math.random() * box.items.length)];
+    itemsForScroll.push(random);
+  }
+
+  // Renderowanie elementów
+  itemsForScroll.forEach(item => {
+    const el = document.createElement("div");
+    el.className = "item";
+    el.textContent = item.name;
+    scrollStrip.appendChild(el);
+  });
+
+  const containerWidth = document.getElementById("scrollContainer").offsetWidth;
+  const itemWidth = 100;
+  const centerIndex = preItems; // nagroda w środku
+  const totalOffset = centerIndex * itemWidth - containerWidth / 2 + itemWidth / 2;
+
+  scrollStrip.style.transition = "none";
+  scrollStrip.style.transform = "translateX(0)";
+  void scrollStrip.offsetWidth; // wymuszenie reflow
+  scrollStrip.style.transition = "transform 2s cubic-bezier(0.33, 1, 0.68, 1)";
+  scrollStrip.style.transform = `translateX(-${totalOffset}px)`;
 
   setTimeout(() => {
     resultEl.innerHTML = `🎉 Wylosowano: <strong>${reward.name}</strong>`;
@@ -97,6 +116,7 @@ function roll(boxType) {
     updateInventory();
   }, 2000);
 }
+
 
 function getRandomItem(pool) {
   const rand = Math.random() * 100;

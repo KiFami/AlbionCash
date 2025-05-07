@@ -124,6 +124,18 @@ body {
   height: 100px;
 }
 
+.scroll-container .pointer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 100px;
+  background: #ff9800; /* Kolor paska */
+  transform: translateY(-50%);
+  z-index: 10; /* Ustawienie nad innymi elementami */
+  pointer-events: none; /* Pasek nie będzie przeszkadzał w interakcji */
+}
+
 .scroll-strip {
   display: flex;
   height: 100%;
