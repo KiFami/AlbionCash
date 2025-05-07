@@ -70,31 +70,33 @@ function roll(boxType) {
   silver -= box.cost;
   updateSilverDisplay();
   resultEl.textContent = "Losowanie...";
-  scrollStrip.innerHTML = "";
 
+  const arrow = document.createElement("div");
+  arrow.classList.add("arrow");
+  arrow.innerHTML = "⏩";
+  scrollStrip.appendChild(arrow);
+
+  // Powielamy itemy w scrollu, aby uzyskać nieskończoność
   const itemsForScroll = [];
-  for (let i = 0; i < 20; i++) {
-    const random = box.items[Math.floor(Math.random() * box.items.length)];
-    itemsForScroll.push(random);
+  const totalItems = 50; // Ilość przedmiotów do wyświetlenia
+  for (let i = 0; i < totalItems; i++) {
+    const randomItem = getRandomItem(box.items);
+    itemsForScroll.push(randomItem);
     const el = document.createElement("div");
     el.className = "item";
-    el.textContent = random.name;
+    el.textContent = randomItem.name;
     scrollStrip.appendChild(el);
   }
 
-  const reward = getRandomItem(box.items);
-  const finalEl = document.createElement("div");
-  finalEl.className = "item";
-  finalEl.textContent = reward.name;
-  scrollStrip.appendChild(finalEl);
-  itemsForScroll.push(reward);
-
-  scrollStrip.style.transform = `translateX(-${(itemsForScroll.length - 1) * 100}px)`;
-
   setTimeout(() => {
+    // Pojawi się losowany przedmiot (wskazówka)
+    const reward = getRandomItem(box.items);
     resultEl.innerHTML = `🎉 Wylosowano: <strong>${reward.name}</strong>`;
     inventory.unshift(reward);
     updateInventory();
+
+    // Usuwamy strzałkę
+    scrollStrip.removeChild(arrow);
   }, 2000);
 }
 
@@ -113,7 +115,7 @@ document.querySelectorAll(".box-btn").forEach(btn => {
     const type = btn.dataset.box;
     scrollStrip.style.transition = "none";
     scrollStrip.style.transform = "translateX(0)";
-    void scrollStrip.offsetWidth;
+    void scrollStrip.offsetWidth;  // Trik na restart animacji
     scrollStrip.style.transition = "transform 2s ease-out";
     roll(type);
   });
