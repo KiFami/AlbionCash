@@ -23,15 +23,21 @@ body {
 
 .boxes {
   margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
 }
 
 .box-btn {
   background: #ff9800;
-  color: black;
-  margin: 0 10px;
+  color: #222;
+  margin: 5px 10px;
   padding: 10px 20px;
   font-size: 18px;
   border-radius: 10px;
+  width: 150px;
+  font-weight: bold;
   border: none;
   cursor: pointer;
 }
@@ -173,7 +179,6 @@ body {
 
 .item.common {
   background: #888;
-  box-shadow: #5dc855 10px 10px 0px 0px; 
 }
 
 .item.rare {
@@ -187,4 +192,46 @@ body {
 .item.legendary {
   background: #fff200;
   font-weight: bold;
+}
+
+.box-info {
+  text-align: left;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ccc;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #1c1c1c;
+  padding: 10px;
+  border-radius: 8px;
+}
+.box-info span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.box-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.info-toggle {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 18px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.info-toggle:hover {
+  background: #ffa726;
+}
+
+.box-info.hidden {
+  display: none;
 }

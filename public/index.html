@@ -14,10 +14,29 @@
   </div>
 
   <div class="boxes">
-    <button class="box-btn" data-box="common">Zwykła (1M)</button>
-    <button class="box-btn" data-box="epic">Epicka (3M)</button>
-    <button class="box-btn" data-box="legendary">Legendarna (6M)</button>
+    <div class="box">
+      <div class="box-header">
+        <button class="box-btn" data-box="common">Zwykła <br> (1M)</button>
+        <button class="info-toggle" data-target="info-common">ℹ️</button>
+      </div>
+      <div class="box-info hidden" id="info-common"></div>
+    </div>
+    <div class="box">
+      <div class="box-header">
+        <button class="box-btn" data-box="epic">Epicka <br> (3M)</button>
+        <button class="info-toggle" data-target="info-epic">ℹ️</button>
+      </div>
+      <div class="box-info hidden" id="info-epic"></div>
+    </div>
+    <div class="box">
+      <div class="box-header">
+        <button class="box-btn" data-box="legendary">Legendarna (6M)</button>
+        <button class="info-toggle" data-target="info-legendary">ℹ️</button>
+      </div>
+      <div class="box-info hidden" id="info-legendary"></div>
+    </div>
   </div>
+  
 
   <div class="lootbox">
     <div class="scroll-container" id="scrollContainer">

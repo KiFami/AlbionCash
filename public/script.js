@@ -16,19 +16,19 @@ const BOXES = {
   epic: {
     cost: 3000000,
     items: [
-      { name: "T8 Mount", value: 1200000, chance: 30 },
-      { name: "Premium Chest", value: 4500000, chance: 40 },
-      { name: "Reliktowy Artefakt", value: 3000000, chance: 20 },
-      { name: "Ekskluzywny Skin", value: 6000000, chance: 10 },
+      { name: "T8 Mount", value: 1200000, chance: 50 },
+      { name: "Premium Chest", value: 4500000, chance: 30 },
+      { name: "Reliktowy Artefakt", value: 3000000, chance: 15 },
+      { name: "Ekskluzywny Skin", value: 6000000, chance: 5 },
     ]
   },
   legendary: {
     cost: 6000000,
     items: [
-      { name: "Ekskluzywny Skin", value: 6000000, chance: 40 },
+      { name: "Ekskluzywny Skin", value: 6000000, chance: 50 },
       { name: "Legendarna Broń", value: 8000000, chance: 30 },
-      { name: "Mega Mount", value: 10000000, chance: 20 },
-      { name: "Unikalny Tytuł", value: 20000000, chance: 10 },
+      { name: "Mega Mount", value: 10000000, chance: 15 },
+      { name: "Unikalny Tytuł", value: 20000000, chance: 5 },
     ]
   }
 };
@@ -137,6 +137,17 @@ function getRandomItem(pool) {
   return pool[pool.length - 1];
 }
 
+function showBoxInfo() {
+  Object.entries(BOXES).forEach(([key, box]) => {
+    const div = document.getElementById(`info-${key}`);
+    div.innerHTML = `<strong>🎁 Szanse (${(box.cost/1000000).toFixed(0)}M):</strong><br>`;
+    box.items.forEach(item => {
+      div.innerHTML += `<span>${item.name} — ${item.chance}% — ${item.value.toLocaleString()} srebra</span>`;
+    });
+  });
+}
+
+
 document.querySelectorAll(".box-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     const type = btn.dataset.box;
@@ -162,6 +173,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 window.addEventListener("load", () => {
   updateSilverDisplay();
   updateInventory();
+  showBoxInfo();
 });
 
 function getRarityClass(chance) {
@@ -170,3 +182,10 @@ function getRarityClass(chance) {
   if (chance <= 30) return "rare";
   return "common";
 }
+
+document.querySelectorAll(".info-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = document.getElementById(btn.dataset.target);
+    target.classList.toggle("hidden");
+  });
+});
