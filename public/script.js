@@ -70,34 +70,31 @@ function roll(boxType) {
   silver -= box.cost;
   updateSilverDisplay();
   resultEl.textContent = "Losowanie...";
+  scrollStrip.innerHTML = "";
 
-  // Dodajemy strzałkę
-  const arrow = document.createElement("div");
-  arrow.classList.add("arrow");
-  arrow.innerHTML = "⏩";
-  scrollStrip.appendChild(arrow);
-
-  // Tworzymy powtarzający się pasek scrolla
   const itemsForScroll = [];
-  const totalItems = 30; // Liczba przedmiotów w scrollu
-  for (let i = 0; i < totalItems; i++) {
-    const randomItem = getRandomItem(box.items);
-    itemsForScroll.push(randomItem);
+  for (let i = 0; i < 20; i++) {
+    const random = box.items[Math.floor(Math.random() * box.items.length)];
+    itemsForScroll.push(random);
     const el = document.createElement("div");
     el.className = "item";
-    el.textContent = randomItem.name;
+    el.textContent = random.name;
     scrollStrip.appendChild(el);
   }
 
-  // Ustawienie animacji, aby przewijało się w nieskończoność
+  const reward = getRandomItem(box.items);
+  const finalEl = document.createElement("div");
+  finalEl.className = "item";
+  finalEl.textContent = reward.name;
+  scrollStrip.appendChild(finalEl);
+  itemsForScroll.push(reward);
+
+  scrollStrip.style.transform = `translateX(-${(itemsForScroll.length - 1) * 100}px)`;
+
   setTimeout(() => {
-    const reward = getRandomItem(box.items);
     resultEl.innerHTML = `🎉 Wylosowano: <strong>${reward.name}</strong>`;
     inventory.unshift(reward);
     updateInventory();
-
-    // Usuwamy strzałkę po zakończeniu animacji
-    scrollStrip.removeChild(arrow);
   }, 2000);
 }
 
@@ -116,10 +113,21 @@ document.querySelectorAll(".box-btn").forEach(btn => {
     const type = btn.dataset.box;
     scrollStrip.style.transition = "none";
     scrollStrip.style.transform = "translateX(0)";
-    void scrollStrip.offsetWidth;  // Restartujemy animację
+    void scrollStrip.offsetWidth;
     scrollStrip.style.transition = "transform 2s ease-out";
     roll(type);
   });
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Na pewno zresetować grę?")) {
+    silver = 5000000;
+    inventory = [];
+    localStorage.clear();
+    updateSilverDisplay();
+    updateInventory();
+    resultEl.textContent = "";
+  }
 });
 
 window.addEventListener("load", () => {
