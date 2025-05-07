@@ -73,7 +73,7 @@ function roll(boxType) {
   scrollStrip.innerHTML = "";
 
   const itemsForScroll = [];
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 40; i++) {
     const random = box.items[Math.floor(Math.random() * box.items.length)];
     itemsForScroll.push(random);
     const el = document.createElement("div");
