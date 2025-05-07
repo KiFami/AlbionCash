@@ -11,6 +11,24 @@
       text-align: center;
       padding: 50px;
     }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .user-info {
+      font-size: 18px;
+    }
+    .login-btn {
+      background: #7289da;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
     .lootbox {
       background: #222;
       border-radius: 15px;
@@ -43,14 +61,49 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+    .history {
+      margin-top: 40px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    .history h2 {
+      font-size: 20px;
+      color: #ff9800;
+    }
+    .history ul {
+      list-style: none;
+      padding: 0;
+    }
+    .history li {
+      margin: 5px 0;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+    }
   </style>
 </head>
 <body>
+
+  <div class="header">
+    <div class="user-info" id="userInfo">
+      Niezalogowany
+    </div>
+    <button class="login-btn" onclick="loginWithDiscord()">Zaloguj przez Discord</button>
+  </div>
+
   <h1>Lootbox Albion Online</h1>
   <div class="lootbox">
     <p>Otwórz skrzynkę za 1M srebra!</p>
     <button id="openBtn">Otwórz skrzynkę</button>
     <div class="result" id="result"></div>
+  </div>
+
+  <div class="history" id="history">
+    <h2>Historia losowań</h2>
+    <ul id="historyList">
+      <!-- Tutaj historia -->
+    </ul>
   </div>
 
   <script>
@@ -61,8 +114,26 @@
       { name: "Pusta skrzynka", chance: 55 }
     ];
 
+    const user = {
+      username: null,
+      silver: 5000000, // Przykładowe saldo
+      history: []
+    };
+
+    function loginWithDiscord() {
+      // Przekierowanie do backendowego endpointa Discord OAuth
+      window.location.href = "/auth/discord";
+    }
+
     document.getElementById("openBtn").addEventListener("click", function () {
       const resultEl = document.getElementById("result");
+      const historyList = document.getElementById("historyList");
+
+      if (user.silver < 1000000) {
+        resultEl.innerHTML = "❌ Za mało srebra!";
+        return;
+      }
+
       resultEl.innerHTML = "Losowanie...";
       resultEl.classList.add("spinning");
 
@@ -77,10 +148,31 @@
             break;
           }
         }
+
+        user.silver -= 1000000;
+        user.history.unshift(`🎁 ${new Date().toLocaleTimeString()} — ${reward}`);
+        updateUserInfo();
+        updateHistory();
+
         resultEl.classList.remove("spinning");
         resultEl.innerHTML = `🎁 Wylosowano: <strong>${reward}</strong>`;
       }, 2000);
     });
+
+    function updateUserInfo() {
+      const el = document.getElementById("userInfo");
+      el.innerText = user.username
+        ? `${user.username} — 💰 ${user.silver.toLocaleString()} srebra`
+        : "Niezalogowany";
+    }
+
+    function updateHistory() {
+      const list = document.getElementById("historyList");
+      list.innerHTML = user.history.map(item => `<li>${item}</li>`).join('');
+    }
+
+    updateUserInfo();
+    updateHistory();
   </script>
 </body>
 </html>
