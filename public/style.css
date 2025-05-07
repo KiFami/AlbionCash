@@ -170,3 +170,21 @@ body {
   50% { transform: translate(-50%, -50%) scale(1.2); }
   100% { transform: translate(-50%, -50%) scale(1); }
 }
+
+.item.common {
+  background: #888;
+  box-shadow: #5dc855 10px 10px 0px 0px; 
+}
+
+.item.rare {
+  background: #5dc855;
+}
+
+.item.epic {
+  background: #5d00ff;
+}
+
+.item.legendary {
+  background: #fff200;
+  font-weight: bold;
+}

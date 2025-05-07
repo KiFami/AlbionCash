@@ -69,6 +69,12 @@ function roll(boxType) {
 
   silver -= box.cost;
   updateSilverDisplay();
+  
+  const spinAudio = document.getElementById("spinSound");
+  spinAudio.currentTime = 0;
+  spinAudio.play();
+  setTimeout(() => spinAudio.pause(), 10000);
+
   resultEl.textContent = "Losowanie...";
   scrollStrip.innerHTML = "";
 
@@ -94,10 +100,11 @@ function roll(boxType) {
   // Renderowanie elementów
   itemsForScroll.forEach(item => {
     const el = document.createElement("div");
-    el.className = "item";
+    el.className = `item ${getRarityClass(item.chance)}`;
     el.textContent = item.name;
     scrollStrip.appendChild(el);
   });
+
 
   const containerWidth = document.getElementById("scrollContainer").offsetWidth;
   const itemWidth = 100;
@@ -107,14 +114,16 @@ function roll(boxType) {
   scrollStrip.style.transition = "none";
   scrollStrip.style.transform = "translateX(0)";
   void scrollStrip.offsetWidth; // wymuszenie reflow
-  scrollStrip.style.transition = "transform 2s cubic-bezier(0.33, 1, 0.68, 1)";
+  scrollStrip.style.transition = "transform 10s cubic-bezier(0.1, 0.9, 0.2, 1)";
   scrollStrip.style.transform = `translateX(-${totalOffset}px)`;
 
   setTimeout(() => {
+    document.getElementById("dropSound").play();
     resultEl.innerHTML = `🎉 Wylosowano: <strong>${reward.name}</strong>`;
     inventory.unshift(reward);
     updateInventory();
-  }, 2000);
+  }, 9500); // 9,5 sekund całkowitej animacji
+  
 }
 
 
@@ -154,3 +163,10 @@ window.addEventListener("load", () => {
   updateSilverDisplay();
   updateInventory();
 });
+
+function getRarityClass(chance) {
+  if (chance <= 5) return "legendary";
+  if (chance <= 15) return "epic";
+  if (chance <= 30) return "rare";
+  return "common";
+}
