@@ -2,6 +2,8 @@ const silverEl = document.getElementById("silver");
 const resultEl = document.getElementById("result");
 const inventoryList = document.getElementById("inventoryList");
 const scrollStrip = document.getElementById("scrollStrip");
+const scrollContainer = document.getElementById("scrollContainer");
+const pointer = document.querySelector(".pointer");
 
 const BOXES = {
   common: {
@@ -89,12 +91,16 @@ function roll(boxType) {
   scrollStrip.appendChild(finalEl);
   itemsForScroll.push(reward);
 
+  scrollStrip.style.transition = "none";
   scrollStrip.style.transform = `translateX(-${(itemsForScroll.length - 1) * 100}px)`;
+  pointer.style.transform = `translateX(${(itemsForScroll.length - 1) * 100}px)`;  // Strzałka na końcu
 
   setTimeout(() => {
     resultEl.innerHTML = `🎉 Wylosowano: <strong>${reward.name}</strong>`;
     inventory.unshift(reward);
     updateInventory();
+    scrollStrip.style.transition = "transform 2s ease-out";
+    scrollStrip.style.transform = `translateX(-${(itemsForScroll.length - 1) * 100}px)`;
   }, 2000);
 }
 
@@ -111,10 +117,6 @@ function getRandomItem(pool) {
 document.querySelectorAll(".box-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     const type = btn.dataset.box;
-    scrollStrip.style.transition = "none";
-    scrollStrip.style.transform = "translateX(0)";
-    void scrollStrip.offsetWidth;
-    scrollStrip.style.transition = "transform 2s ease-out";
     roll(type);
   });
 });
