@@ -3,17 +3,17 @@ body {
     color: #fff;
     font-family: Arial, sans-serif;
     text-align: center;
-    padding: 50px;
+    padding: 30px;
   }
   
   .status {
-    margin-bottom: 30px;
-    font-size: 18px;
+    margin-bottom: 20px;
+    font-size: 20px;
   }
   
   .status button {
-    margin-left: 20px;
-    background: #e53935;
+    margin-left: 15px;
+    background: #c62828;
     color: white;
     border: none;
     padding: 6px 12px;
@@ -21,65 +21,93 @@ body {
     cursor: pointer;
   }
   
-  .lootbox {
-    background: #222;
-    border-radius: 15px;
-    padding: 30px;
-    display: inline-block;
-    box-shadow: 0 0 20px #ff9800;
+  .boxes {
+    margin: 20px 0;
   }
   
-  .result {
-    margin-top: 20px;
-    font-size: 24px;
-    color: gold;
-  }
-  
-  button {
+  .box-btn {
     background: #ff9800;
-    color: #000;
-    padding: 15px 30px;
-    border: none;
+    color: black;
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 18px;
     border-radius: 10px;
-    font-size: 20px;
+    border: none;
     cursor: pointer;
-    transition: background 0.3s;
   }
   
-  button:hover {
+  .box-btn:hover {
     background: #ffa726;
   }
   
-  .spinning {
-    animation: spin 2s linear infinite;
+  .lootbox {
+    margin-top: 30px;
   }
   
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  .scroll-container {
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 4px solid #ff9800;
+    border-radius: 10px;
+    background: #222;
+    height: 100px;
+    position: relative;
   }
   
-  .history {
+  .scroll-strip {
+    display: flex;
+    height: 100%;
+    transition: transform 2s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  
+  .scroll-strip .item {
+    min-width: 100px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #333;
+    color: #fff;
+    font-size: 16px;
+    border-right: 2px solid #444;
+  }
+  
+  .result {
+    margin-top: 15px;
+    font-size: 22px;
+    color: gold;
+  }
+  
+  .inventory {
     margin-top: 40px;
-    max-width: 400px;
+    text-align: left;
+    max-width: 500px;
     margin-left: auto;
     margin-right: auto;
-    text-align: left;
   }
   
-  .history h2 {
-    font-size: 20px;
-    color: #ff9800;
-  }
-  
-  .history ul {
+  .inventory ul {
     list-style: none;
     padding: 0;
   }
   
-  .history li {
-    margin: 5px 0;
-    border-bottom: 1px solid #444;
-    padding-bottom: 5px;
+  .inventory li {
+    background: #222;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .inventory button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
   }
   

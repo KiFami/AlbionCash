@@ -13,15 +13,22 @@
     <button id="resetBtn">Reset</button>
   </div>
 
+  <div class="boxes">
+    <button class="box-btn" data-box="common">Zwykła (1M)</button>
+    <button class="box-btn" data-box="epic">Epicka (3M)</button>
+    <button class="box-btn" data-box="legendary">Legendarna (6M)</button>
+  </div>
+
   <div class="lootbox">
-    <p>Otwórz skrzynkę za 1M srebra!</p>
-    <button id="openBtn">Otwórz skrzynkę</button>
+    <div class="scroll-container" id="scrollContainer">
+      <div class="scroll-strip" id="scrollStrip"></div>
+    </div>
     <div class="result" id="result"></div>
   </div>
 
-  <div class="history" id="history">
-    <h2>Historia losowań</h2>
-    <ul id="historyList"></ul>
+  <div class="inventory" id="inventory">
+    <h2>📦 Ekwipunek</h2>
+    <ul id="inventoryList"></ul>
   </div>
 
   <script src="script.js"></script>
