@@ -62,33 +62,46 @@ window.login = login;
 // Box Types and Item Definitions
 const BOXES = {
   common: {
-    cost: 1000000,
+    cost: 500000,
     items: [
-      { name: "T4 Broń", value: 400000, chance: 50 },
-      { name: "T6 Zbroja", value: 700000, chance: 30 },
-      { name: "T8 Mount", value: 1200000, chance: 15 },
-      { name: "Reliktowy Artefakt", value: 3000000, chance: 5 },
+      { name: "T1 Sakwa", value: 200000, chance: 50 },
+      { name: "T2 Sakwa", value: 300000, chance: 30 },
+      { name: "T3 Sakwa", value: 400000, chance: 10 },
+      { name: "T4 Sakwa", value: 500000, chance: 5 },
+      { name: "T5 Sakwa", value: 600000, chance: 2 },
+      { name: "T6 Sakwa", value: 800000, chance: 1 },
+      { name: "T7 Sakwa", value: 1000000, chance: 0.5 },
+      { name: "T8 Sakwa", value: 1200000, chance: 0.5 }
     ]
   },
   epic: {
-    cost: 3000000,
+    cost: 1000000,
     items: [
-      { name: "T8 Mount", value: 1200000, chance: 50 },
-      { name: "Premium Chest", value: 4500000, chance: 30 },
-      { name: "Reliktowy Artefakt", value: 3000000, chance: 15 },
-      { name: "Ekskluzywny Skin", value: 6000000, chance: 5 },
+      { name: "T1 Sakwa", value: 300000, chance: 5 },
+      { name: "T2 Sakwa", value: 500000, chance: 10 },
+      { name: "T3 Sakwa", value: 700000, chance: 15 },
+      { name: "T4 Sakwa", value: 900000, chance: 20 },
+      { name: "T5 Sakwa", value: 1200000, chance: 20 },
+      { name: "T6 Sakwa", value: 1500000, chance: 15 },
+      { name: "T7 Sakwa", value: 2000000, chance: 10 },
+      { name: "T8 Sakwa", value: 2500000, chance: 5 }
     ]
   },
   legendary: {
-    cost: 6000000,
+    cost: 3000000,
     items: [
-      { name: "Ekskluzywny Skin", value: 6000000, chance: 50 },
-      { name: "Legendarna Broń", value: 8000000, chance: 30 },
-      { name: "Mega Mount", value: 10000000, chance: 15 },
-      { name: "Unikalny Tytuł", value: 20000000, chance: 5 },
+      { name: "T1 Sakwa", value: 500000, chance: 5 },
+      { name: "T2 Sakwa", value: 800000, chance: 5 },
+      { name: "T3 Sakwa", value: 1200000, chance: 5 },
+      { name: "T4 Sakwa", value: 1600000, chance: 10 },
+      { name: "T5 Sakwa", value: 2000000, chance: 10 },
+      { name: "T6 Sakwa", value: 3000000, chance: 10 },
+      { name: "T7 Sakwa", value: 5000000, chance: 5 },
+      { name: "T8 Sakwa", value: 10000000, chance: 5 }
     ]
   }
 };
+
 
 
 function roll(boxType) {
@@ -130,7 +143,7 @@ function roll(boxType) {
   // Renderowanie elementów
   itemsForScroll.forEach(item => {
     const el = document.createElement("div");
-    el.className = `item ${getRarityClass(item.chance)}`;
+    el.className = `item ${getRarityClass(item.name)}`;
     el.textContent = item.name;
     scrollStrip.appendChild(el);
   });
@@ -163,12 +176,17 @@ function getRandomItem(pool) {
   return pool[pool.length - 1];
 }
 
-function getRarityClass(chance) {
-  if (chance <= 5) return "legendary";
-  if (chance <= 15) return "epic";
-  if (chance <= 30) return "rare";
-  return "common";
-}
+
+function getRarityClass(name) {
+  if (name.includes("T8 Sakwa")) return "mythicT8";
+  if (name.includes("T7 Sakwa")) return "legendaryT7";
+  if (name.includes("T6 Sakwa")) return "epicT6";
+  if (name.includes("T5 Sakwa")) return "rareT5";
+  if (name.includes("T4 Sakwa")) return "legendary";
+  if (name.includes("T3 Sakwa")) return "epic";
+  if (name.includes("T2 Sakwa")) return "rare"; 
+  return "common"; // T1 lub inne
+} 
 
 document.querySelectorAll(".box-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -239,7 +257,6 @@ window.addEventListener("visibilitychange", () => {
     saveUserData();
   }
 });
-
 setInterval(saveUserData, 10000);
 
 function saveUserData() {
@@ -260,3 +277,17 @@ function saveUserData() {
       }
     });
 }
+
+function populateBoxInfos() {
+  for (const [boxType, boxData] of Object.entries(BOXES)) {
+    const infoDiv = document.getElementById(`info-${boxType}`);
+    if (!infoDiv) continue;
+
+    infoDiv.innerHTML = boxData.items.map(item => {
+      return `<span><strong>${item.name}</strong> — Wartość: ${item.value.toLocaleString()}, Szansa: ${item.chance}%</span>`;
+    }).join('');
+  }
+}
+
+// Wywołaj po załadowaniu UI
+populateBoxInfos();

@@ -1,7 +1,7 @@
 body {
   background: #111;
   color: #fff;
-  font-family: Arial, sans-serif;
+  font-family: Poppins, sans-serif;
   text-align: center;
   padding: 30px;
 }
@@ -9,16 +9,6 @@ body {
 .status {
   margin-bottom: 20px;
   font-size: 20px;
-}
-
-.status button {
-  margin-left: 15px;
-  background: #c62828;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 .boxes {
@@ -73,10 +63,44 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #333;
-  color: #fff;
+  background-size: cover;
+  color: transparent; /* Ukrywamy tekst, ponieważ obraz jest widoczny */
   font-size: 16px;
   border-right: 2px solid #444;
+}
+
+/* Dodajemy style dla poszczególnych typów przedmiotów z różnymi obrazami */
+
+.item.common {
+  background-image: url('pic/T1.png'); /* Tło dla przedmiotu T1 */
+}
+
+.item.rare {
+  background-image: url('pic/T2.png'); /* Tło dla przedmiotu T2 */
+}
+
+.item.epic {
+  background-image: url('pic/T3.png'); /* Tło dla przedmiotu T3 */
+}
+
+.item.legendary {
+  background-image: url('pic/T4.png'); /* Tło dla przedmiotu T4 */
+}
+
+.item.rareT5 {
+  background-image: url('pic/T5.png'); /* Tło dla przedmiotu T5 */
+}
+
+.item.epicT6 {
+  background-image: url('pic/T6.png'); /* Tło dla przedmiotu T6 */
+}
+
+.item.legendaryT7 {
+  background-image: url('pic/T7.png'); /* Tło dla przedmiotu T7 */
+}
+
+.item.mythicT8 {
+  background-image: url('pic/T8.png'); /* Tło dla przedmiotu T8 */
 }
 
 .result {
@@ -147,51 +171,6 @@ body {
   height: 100%;
   transition: transform 2s cubic-bezier(0.33, 1, 0.68, 1);
   position: relative;
-}
-
-.scroll-strip .item {
-  min-width: 100px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #333;
-  color: #fff;
-  font-size: 16px;
-  border-right: 2px solid #444;
-}
-
-.scroll-strip .arrow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #ff9800;
-  font-size: 30px;
-  animation: arrowPulse 1s infinite;
-}
-
-@keyframes arrowPulse {
-  0% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.2); }
-  100% { transform: translate(-50%, -50%) scale(1); }
-}
-
-.item.common {
-  background: #888;
-}
-
-.item.rare {
-  background: #5dc855;
-}
-
-.item.epic {
-  background: #5d00ff;
-}
-
-.item.legendary {
-  background: #fff200;
-  font-weight: bold;
 }
 
 .box-info {
