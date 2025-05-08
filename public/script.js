@@ -189,3 +189,62 @@ document.querySelectorAll(".info-toggle").forEach(btn => {
     target.classList.toggle("hidden");
   });
 });
+
+let currentUser = null;
+
+async function login() {
+  const nickname = document.getElementById("nicknameInput").value.trim();
+  if (!nickname) return alert("Podaj nick!");
+
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('nickname', nickname)
+    .single();
+
+  if (user) {
+    currentUser = user;
+    silver = user.silver;
+    inventory = user.inventory || [];
+    updateSilverDisplay();
+    updateInventory();
+    alert(`Zalogowano jako ${nickname}`);
+  } else {
+    // Nie istnieje – stwórz
+    const { data: newUser, error: insertErr } = await supabase
+      .from('users')
+      .insert({
+        nickname,
+        silver: 5000000,
+        inventory: []
+      })
+      .select()
+      .single();
+
+    if (insertErr) {
+      console.error(insertErr);
+      return alert("Błąd przy tworzeniu użytkownika");
+    }
+
+    currentUser = newUser;
+    silver = 5000000;
+    inventory = [];
+    updateSilverDisplay();
+    updateInventory();
+    alert(`Utworzono konto i zalogowano jako ${nickname}`);
+  }
+}
+
+if (currentUser) {
+  supabase.from('users').update({ silver }).eq('id', currentUser.id);
+}
+
+if (currentUser) {
+  supabase.from('users').update({ inventory }).eq('id', currentUser.id);
+}
+
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://azdsuizsbuyhzlwjusgc.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
