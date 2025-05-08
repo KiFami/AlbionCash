@@ -181,16 +181,6 @@ document.querySelectorAll(".box-btn").forEach(btn => {
   });
 });
 
-document.getElementById("resetBtn").addEventListener("click", () => {
-  if (confirm("Na pewno zresetować grę?")) {
-    silver = 5000000;
-    inventory = [];
-    localStorage.clear();
-    updateSilverDisplay();
-    updateInventory();
-    resultEl.textContent = "";
-  }
-});
 
 window.addEventListener("load", () => {
   updateSilverDisplay();
@@ -249,6 +239,7 @@ window.addEventListener("visibilitychange", () => {
     saveUserData();
   }
 });
+
 setInterval(saveUserData, 10000);
 
 function saveUserData() {
