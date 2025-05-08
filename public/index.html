@@ -5,16 +5,16 @@
   <title>Lootbox Albion Online</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const supabase = supabase.createClient('https://azdsuizsbuyhzlwjusgc.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZHN1aXpzYnV5aHpsd2p1c2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3MTcyMzAsImV4cCI6MjA2MjI5MzIzMH0.mDfClTvcVHN99ta3Iyz6EAnGRTsuFscMprggcHlvjcw');
-  </script>
 </head>
 <body>
   <h1>Lootbox Albion Online</h1>
   
-  <div class="login">
-    <input type="text" id="nicknameInput" placeholder="Wpisz nick">
+  <div class="login-box" id="loginBox">
+    <h2>🔐 Logowanie</h2>
+    <input type="text" id="nicknameInput" placeholder="Nickname">
+    <input type="password" id="passwordInput" placeholder="Hasło">
     <button onclick="login()">Zaloguj</button>
+    <div id="loginError" style="color:red;"></div>
   </div>
 
   <div class="status">

@@ -3,6 +3,82 @@ const resultEl = document.getElementById("result");
 const inventoryList = document.getElementById("inventoryList");
 const scrollStrip = document.getElementById("scrollStrip");
 
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+// 🧠 Supabase dane logowania:
+const supabaseUrl = 'https://azdsuizsbuyhzlwjusgc.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZHN1aXpzYnV5aHpsd2p1c2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3MTcyMzAsImV4cCI6MjA2MjI5MzIzMH0.mDfClTvcVHN99ta3Iyz6EAnGRTsuFscMprggcHlvjcw';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+let currentUser = null;
+let silver = 0;
+let inventory = [];
+
+async function login() {
+  const nickname = document.getElementById("nicknameInput").value.trim();
+  const password = document.getElementById("passwordInput").value;
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("nickname", nickname)
+    .eq("password", password)
+    .single();
+
+  if (error || !data) {
+    document.getElementById("loginError").textContent = "❌ Błędny login lub hasło";
+    return;
+  }
+
+  currentUser = data;
+  silver = data.silver;
+  inventory = data.inventory;
+
+  document.getElementById("loginBox").style.display = "none";
+  document.querySelector(".status").style.display = "block";
+  document.querySelector(".boxes").style.display = "block";
+  document.querySelector(".lootbox").style.display = "block";
+  document.querySelector(".inventory").style.display = "block";
+
+  updateSilverDisplay();
+  updateInventory();
+}
+
+function updateSilverDisplay() {
+  silverEl.textContent = silver.toLocaleString();
+
+  if (currentUser) {
+    supabase.from("users").update({ silver }).eq("nickname", currentUser.nickname);
+  }
+}
+
+
+function updateInventory() {
+  inventoryList.innerHTML = "";
+  inventory.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `${item.name} — <strong>${item.value.toLocaleString()} srebra</strong>`;
+    const sellBtn = document.createElement("button");
+    sellBtn.textContent = "Sprzedaj";
+    sellBtn.onclick = () => {
+      silver += item.value;
+      inventory.splice(index, 1);
+      updateSilverDisplay();
+      updateInventory();
+    };
+    li.appendChild(sellBtn);
+    inventoryList.appendChild(li);
+  });
+
+  if (currentUser) {
+    supabase.from("users").update({ inventory }).eq("nickname", currentUser.nickname);
+  }
+}
+
+
+
+
 const BOXES = {
   common: {
     cost: 1000000,
@@ -32,9 +108,6 @@ const BOXES = {
     ]
   }
 };
-
-let silver = parseInt(localStorage.getItem("silver") || "5000000");
-let inventory = JSON.parse(localStorage.getItem("inventory") || "[]");
 
 function updateSilverDisplay() {
   silverEl.textContent = silver.toLocaleString();
@@ -189,62 +262,3 @@ document.querySelectorAll(".info-toggle").forEach(btn => {
     target.classList.toggle("hidden");
   });
 });
-
-let currentUser = null;
-
-async function login() {
-  const nickname = document.getElementById("nicknameInput").value.trim();
-  if (!nickname) return alert("Podaj nick!");
-
-  const { data: user, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('nickname', nickname)
-    .single();
-
-  if (user) {
-    currentUser = user;
-    silver = user.silver;
-    inventory = user.inventory || [];
-    updateSilverDisplay();
-    updateInventory();
-    alert(`Zalogowano jako ${nickname}`);
-  } else {
-    // Nie istnieje – stwórz
-    const { data: newUser, error: insertErr } = await supabase
-      .from('users')
-      .insert({
-        nickname,
-        silver: 5000000,
-        inventory: []
-      })
-      .select()
-      .single();
-
-    if (insertErr) {
-      console.error(insertErr);
-      return alert("Błąd przy tworzeniu użytkownika");
-    }
-
-    currentUser = newUser;
-    silver = 5000000;
-    inventory = [];
-    updateSilverDisplay();
-    updateInventory();
-    alert(`Utworzono konto i zalogowano jako ${nickname}`);
-  }
-}
-
-if (currentUser) {
-  supabase.from('users').update({ silver }).eq('id', currentUser.id);
-}
-
-if (currentUser) {
-  supabase.from('users').update({ inventory }).eq('id', currentUser.id);
-}
-
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = 'https://azdsuizsbuyhzlwjusgc.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
