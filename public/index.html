@@ -5,18 +5,18 @@
   <title>Lootbox Albion Online</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
   <h1>Lootbox Albion Online</h1>
-  
   <div class="login-box" id="loginBox">
     <h2>🔐 Logowanie</h2>
     <input type="text" id="nicknameInput" placeholder="Nickname">
     <input type="password" id="passwordInput" placeholder="Hasło">
-    <button onclick="login()">Zaloguj</button>
+    <button onclick="login()">Zaloguj się</button>
     <div id="loginError" style="color:red;"></div>
   </div>
-
+<div id="gameUI" style="display: none;">
   <div class="status">
     💰 Saldo: <span id="silver">0</span> srebra
     <button id="resetBtn">Reset</button>
@@ -59,9 +59,7 @@
     <h2>📦 Ekwipunek</h2>
     <ul id="inventoryList"></ul>
   </div>
-
-  <script src="script.js"></script>
-  <audio id="dropSound" src="drop.mp3" preload="auto"></audio>
   <audio id="spinSound" src="spinning-wheel.mp3" preload="auto"></audio>
+</div>
 </body>
 </html>

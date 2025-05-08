@@ -1,23 +1,30 @@
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+// Supabase URL and Key
+const supabaseUrl = 'https://azdsuizsbuyhzlwjusgc.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZHN1aXpzYnV5aHpsd2p1c2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3MTcyMzAsImV4cCI6MjA2MjI5MzIzMH0.mDfClTvcVHN99ta3Iyz6EAnGRTsuFscMprggcHlvjcw';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Initial Data
+let currentUser = null;
+let silver = 5000000; // Start with 5,000,000 silver
+let inventory = [];
+
+// DOM Elements
 const silverEl = document.getElementById("silver");
 const resultEl = document.getElementById("result");
 const inventoryList = document.getElementById("inventoryList");
 const scrollStrip = document.getElementById("scrollStrip");
 
-
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-// 🧠 Supabase dane logowania:
-const supabaseUrl = 'https://azdsuizsbuyhzlwjusgc.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZHN1aXpzYnV5aHpsd2p1c2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3MTcyMzAsImV4cCI6MjA2MjI5MzIzMH0.mDfClTvcVHN99ta3Iyz6EAnGRTsuFscMprggcHlvjcw';
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-let currentUser = null;
-let silver = 0;
-let inventory = [];
-
 async function login() {
   const nickname = document.getElementById("nicknameInput").value.trim();
   const password = document.getElementById("passwordInput").value;
+  const errorBox = document.getElementById("loginError");
+
+  if (!nickname || !password) {
+    errorBox.textContent = "Podaj nickname i hasło.";
+    return;
+  }
 
   const { data, error } = await supabase
     .from("users")
@@ -27,58 +34,32 @@ async function login() {
     .single();
 
   if (error || !data) {
-    document.getElementById("loginError").textContent = "❌ Błędny login lub hasło";
+    errorBox.textContent = "Nieprawidłowy nickname lub hasło.";
     return;
   }
 
-  currentUser = data;
-  silver = data.silver;
-  inventory = data.inventory;
-
+  // Ukryj formularz logowania
   document.getElementById("loginBox").style.display = "none";
-  document.querySelector(".status").style.display = "block";
-  document.querySelector(".boxes").style.display = "block";
-  document.querySelector(".lootbox").style.display = "block";
-  document.querySelector(".inventory").style.display = "block";
-
+  errorBox.textContent = "";
+  alert(`Zalogowano jako ${data.nickname}`);
+  document.getElementById("gameUI").style.display = "block";
+  currentUser = data;
+  silver = data.silver || 0;
+  try {
+    inventory = data.inventory;
+    if (!Array.isArray(inventory)) throw new Error("Nie tablica");
+  } catch (e) {
+    console.warn("Niepoprawny format inventory. Ustawiam pustą tablicę.");
+    inventory = [];
+  }
   updateSilverDisplay();
   updateInventory();
 }
 
-function updateSilverDisplay() {
-  silverEl.textContent = silver.toLocaleString();
-
-  if (currentUser) {
-    supabase.from("users").update({ silver }).eq("nickname", currentUser.nickname);
-  }
-}
+window.login = login;
 
 
-function updateInventory() {
-  inventoryList.innerHTML = "";
-  inventory.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `${item.name} — <strong>${item.value.toLocaleString()} srebra</strong>`;
-    const sellBtn = document.createElement("button");
-    sellBtn.textContent = "Sprzedaj";
-    sellBtn.onclick = () => {
-      silver += item.value;
-      inventory.splice(index, 1);
-      updateSilverDisplay();
-      updateInventory();
-    };
-    li.appendChild(sellBtn);
-    inventoryList.appendChild(li);
-  });
-
-  if (currentUser) {
-    supabase.from("users").update({ inventory }).eq("nickname", currentUser.nickname);
-  }
-}
-
-
-
-
+// Box Types and Item Definitions
 const BOXES = {
   common: {
     cost: 1000000,
@@ -109,29 +90,6 @@ const BOXES = {
   }
 };
 
-function updateSilverDisplay() {
-  silverEl.textContent = silver.toLocaleString();
-  localStorage.setItem("silver", silver);
-}
-
-function updateInventory() {
-  inventoryList.innerHTML = "";
-  inventory.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `${item.name} — <strong>${item.value.toLocaleString()} srebra</strong>`;
-    const sellBtn = document.createElement("button");
-    sellBtn.textContent = "Sprzedaj";
-    sellBtn.onclick = () => {
-      silver += item.value;
-      inventory.splice(index, 1);
-      updateSilverDisplay();
-      updateInventory();
-    };
-    li.appendChild(sellBtn);
-    inventoryList.appendChild(li);
-  });
-  localStorage.setItem("inventory", JSON.stringify(inventory));
-}
 
 function roll(boxType) {
   const box = BOXES[boxType];
@@ -154,7 +112,6 @@ function roll(boxType) {
   const reward = getRandomItem(box.items);
 
   const itemsForScroll = [];
-
   const preItems = 20;
   const postItems = 20;
 
@@ -178,7 +135,6 @@ function roll(boxType) {
     scrollStrip.appendChild(el);
   });
 
-
   const containerWidth = document.getElementById("scrollContainer").offsetWidth;
   const itemWidth = 100;
   const centerIndex = preItems; // nagroda w środku
@@ -191,14 +147,11 @@ function roll(boxType) {
   scrollStrip.style.transform = `translateX(-${totalOffset}px)`;
 
   setTimeout(() => {
-    document.getElementById("dropSound").play();
     resultEl.innerHTML = `🎉 Wylosowano: <strong>${reward.name}</strong>`;
     inventory.unshift(reward);
     updateInventory();
   }, 9500); // 9,5 sekund całkowitej animacji
-  
 }
-
 
 function getRandomItem(pool) {
   const rand = Math.random() * 100;
@@ -210,16 +163,12 @@ function getRandomItem(pool) {
   return pool[pool.length - 1];
 }
 
-function showBoxInfo() {
-  Object.entries(BOXES).forEach(([key, box]) => {
-    const div = document.getElementById(`info-${key}`);
-    div.innerHTML = `<strong>🎁 Szanse (${(box.cost/1000000).toFixed(0)}M):</strong><br>`;
-    box.items.forEach(item => {
-      div.innerHTML += `<span>${item.name} — ${item.chance}% — ${item.value.toLocaleString()} srebra</span>`;
-    });
-  });
+function getRarityClass(chance) {
+  if (chance <= 5) return "legendary";
+  if (chance <= 15) return "epic";
+  if (chance <= 30) return "rare";
+  return "common";
 }
-
 
 document.querySelectorAll(".box-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -246,15 +195,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 window.addEventListener("load", () => {
   updateSilverDisplay();
   updateInventory();
-  showBoxInfo();
 });
-
-function getRarityClass(chance) {
-  if (chance <= 5) return "legendary";
-  if (chance <= 15) return "epic";
-  if (chance <= 30) return "rare";
-  return "common";
-}
 
 document.querySelectorAll(".info-toggle").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -262,3 +203,69 @@ document.querySelectorAll(".info-toggle").forEach(btn => {
     target.classList.toggle("hidden");
   });
 });
+
+function updateSilverDisplay() {
+  silverEl.textContent = silver.toLocaleString();
+
+  if (currentUser) {
+    supabase
+      .from("users")
+      .update({ silver })
+      .eq("nickname", currentUser.nickname);
+  }
+}
+
+function updateInventory() {
+  inventoryList.innerHTML = "";
+  inventory.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `${item.name} — <strong>${item.value.toLocaleString()} srebra</strong>`;
+    const sellBtn = document.createElement("button");
+    sellBtn.textContent = "Sprzedaj";
+    sellBtn.onclick = () => {
+      silver += item.value;
+      inventory.splice(index, 1);
+      updateSilverDisplay();
+      updateInventory();
+    };
+    li.appendChild(sellBtn);
+    inventoryList.appendChild(li);
+  });
+
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+
+  if (currentUser) {
+    supabase
+      .from("users")
+      .update({ inventory })
+      .eq("nickname", currentUser.nickname);
+  }
+}
+
+window.addEventListener("beforeunload", saveUserData);
+window.addEventListener("unload", saveUserData);
+window.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    saveUserData();
+  }
+});
+setInterval(saveUserData, 10000);
+
+function saveUserData() {
+  if (!currentUser) return;
+
+  supabase
+    .from("users")
+    .update({
+      silver: silver,
+      inventory: inventory,
+    })
+    .eq("nickname", currentUser.nickname)
+    .then(({ error }) => {
+      if (error) {
+        console.error("❌ Błąd zapisu do Supabase:", error.message);
+      } else {
+        console.log("✅ Dane zapisane do Supabase");
+      }
+    });
+}
